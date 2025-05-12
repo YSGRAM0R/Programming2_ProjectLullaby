@@ -1,32 +1,30 @@
 using UnityEngine;
-using UnityEngine.UI; // For UI components like Slider and Button
+using UnityEngine.UI; 
 
 public class HealthStaminaSystem : MonoBehaviour
 {
     [Header("Health Settings")]
     public float maxHealth = 100f;
     public float currentHealth;
-    public float healthRegenRate = 2f; // Health regeneration per second
-    public Slider healthSlider; // Reference to UI health slider
-    public bool isHealthRegenerating = true; // Whether health regeneration is active or not
-
+    public float healthRegenRate = 2f;
+    public Slider healthSlider;
+    public bool isHealthRegenerating = true;
     [Header("Stamina Settings")]
     public float maxStamina = 100f;
     public float currentStamina;
-    public float staminaRegenRate = 5f; // Stamina regeneration per second
-    public float sprintStaminaDrainRate = 10f; // Stamina drained per second while sprinting
-    public Slider staminaSlider; // Reference to UI stamina slider
+    public float staminaRegenRate = 5f; 
+    public float sprintStaminaDrainRate = 10f;
+    public Slider staminaSlider;
 
     [Header("Player Settings")]
-    public float staminaUseDelay = 0.5f; // Delay between stamina usage actions (e.g., sprinting)
+    public float staminaUseDelay = 0.5f; 
     private float lastStaminaUseTime;
 
     void Start()
     {
         currentHealth = maxHealth;
         currentStamina = maxStamina;
-
-        // If you have UI sliders to show health and stamina, initialize them
+        
         if (healthSlider != null)
         {
             healthSlider.maxValue = maxHealth;
@@ -51,8 +49,7 @@ public class HealthStaminaSystem : MonoBehaviour
         HandleSprinting();
         UpdateUI();
     }
-
-    // Health Regeneration
+    
     void RegenerateHealth()
     {
         if (currentHealth < maxHealth)
@@ -61,8 +58,7 @@ public class HealthStaminaSystem : MonoBehaviour
             currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         }
     }
-
-    // Stamina Regeneration
+    
     void RegenerateStamina()
     {
         if (currentStamina < maxStamina)
@@ -71,13 +67,11 @@ public class HealthStaminaSystem : MonoBehaviour
             currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
         }
     }
-
-    // Handle Sprinting Stamina Drain
+    
     void HandleSprinting()
     {
         if (Input.GetKey(KeyCode.LeftShift) && currentStamina > 0 && Time.time - lastStaminaUseTime > staminaUseDelay)
         {
-            // Sprinting drains stamina
             currentStamina -= sprintStaminaDrainRate * Time.deltaTime;
             currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
@@ -85,12 +79,10 @@ public class HealthStaminaSystem : MonoBehaviour
         }
         else
         {
-            // If not sprinting, regenerate stamina
             RegenerateStamina();
         }
     }
-
-    // Apply damage to the player
+    
     public void TakeDamage(float damageAmount)
     {
         currentHealth -= damageAmount;
@@ -101,23 +93,18 @@ public class HealthStaminaSystem : MonoBehaviour
             Die();
         }
     }
-
-    // Heal the player
+    
     public void Heal(float healAmount)
     {
         currentHealth += healAmount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
     }
 
-    // Handle Player Death
     void Die()
     {
-        // Handle the player's death, like playing an animation or ending the game
         Debug.Log("Player Died");
-        // Example: Disable player movement, show death UI, etc.
     }
-
-    // Update Health and Stamina UI
+    
     void UpdateUI()
     {
         if (healthSlider != null)
@@ -130,8 +117,7 @@ public class HealthStaminaSystem : MonoBehaviour
             staminaSlider.value = currentStamina;
         }
     }
-
-    // Method to toggle health regeneration
+    
     public void ToggleHealthRegeneration(bool enable)
     {
         isHealthRegenerating = enable;

@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     private Vector3 wallRunDirection;
     private bool isTouchingWall = false;
     private Vector3 wallNormal;
-    public float wallCheckDistance = 0.6f;  // Distance to check for wall proximity
+    public float wallCheckDistance = 0.6f;
 
     [Header("Dash")]
     public float dashForce = 20f;
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
     private float currentSpeed = 0f;
     public float acceleration = 10f;
     public float deceleration = 8f;
-    public float airControlFactor = 0.3f; // Control in the air
+    public float airControlFactor = 0.3f;
     public Camera playerCamera;
     public float normalFOV = 60f;
     public float sprintFOV = 80f;
@@ -71,7 +71,6 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        // Set Rigidbody interpolation and collision detection to prevent phasing
         rb.interpolation = RigidbodyInterpolation.Interpolate;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
     }
@@ -90,7 +89,6 @@ public class PlayerController : MonoBehaviour
             jumpBufferTimeLeft -= Time.deltaTime;
         }
 
-        // FOV adjustment based on sprinting
         playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, Input.GetKey(KeyCode.LeftShift) ? sprintFOV : normalFOV, Time.deltaTime * 5f);
     }
 
@@ -115,7 +113,7 @@ public class PlayerController : MonoBehaviour
 
     void HandleMovement()
     {
-        if (isDashing || isWallRunning) return; // Prevent movement while dashing or wall running
+        if (isDashing || isWallRunning) return;
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
@@ -124,7 +122,6 @@ public class PlayerController : MonoBehaviour
 
         float targetSpeed = isCrouching ? crouchSpeed : (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed);
 
-        // Smooth acceleration and deceleration
         if (inputDirection.magnitude > 0)
         {
             currentSpeed = Mathf.MoveTowards(currentSpeed, targetSpeed, acceleration * Time.deltaTime);
@@ -134,7 +131,6 @@ public class PlayerController : MonoBehaviour
             currentSpeed = Mathf.MoveTowards(currentSpeed, 0f, deceleration * Time.deltaTime);
         }
 
-        // Apply air control if in the air
         float movementFactor = isGrounded ? 1f : airControlFactor;
 
         Vector3 targetVelocity = inputDirection * currentSpeed * movementFactor;
@@ -203,7 +199,7 @@ public class PlayerController : MonoBehaviour
         {
             if (wallRunTimer > 0)
             {
-                rb.linearVelocity = new Vector3(wallRunDirection.x, rb.linearVelocity.y, wallRunDirection.z);  // Apply wall run speed
+                rb.linearVelocity = new Vector3(wallRunDirection.x, rb.linearVelocity.y, wallRunDirection.z);
                 wallRunTimer -= Time.deltaTime;
             }
             else
@@ -223,7 +219,7 @@ public class PlayerController : MonoBehaviour
     void EndWallRun()
     {
         isWallRunning = false;
-        rb.useGravity = true; // Restore gravity
+        rb.useGravity = true;
     }
 
     void HandleLanding()
@@ -245,7 +241,7 @@ public class PlayerController : MonoBehaviour
         wallNormal = Vector3.zero;
 
         RaycastHit hit;
-        // Check for wall contact in the right and left directions
+        
         if (Physics.Raycast(transform.position, transform.right, out hit, wallCheckDistance, wallMask) ||
             Physics.Raycast(transform.position, -transform.right, out hit, wallCheckDistance, wallMask))
         {
@@ -256,7 +252,7 @@ public class PlayerController : MonoBehaviour
 
     bool IsCloseToWall()
     {
-        return isTouchingWall && Vector3.Angle(wallNormal, Vector3.up) < 70f; // Ensure the wall angle is valid for wall running
+        return isTouchingWall && Vector3.Angle(wallNormal, Vector3.up) < 70f;
     }
 }
 
